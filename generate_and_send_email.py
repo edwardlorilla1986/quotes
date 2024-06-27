@@ -1,0 +1,103 @@
+import os
+from random import randint
+from requests import get
+from json import loads
+from PIL import Image, ImageDraw, ImageFont
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.image import MIMEImage
+
+# Fetch a random quote from the Forismatic API
+response = get('http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en')
+while len(loads(response.text)) > 10 or len(loads(response.text)) == 0:
+    response = get('http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en')
+
+quote_data = loads(response.text)
+text1 = '{quoteText} - {quoteAuthor}'.format(**quote_data)
+text1 = text1.split(" ")
+c = 0
+text = ""
+
+# Format the quote text with a max of 3 words per line
+for i in text1:
+    c += 1
+    if c > 3:
+        text = text + "\n" + i + " "
+        c = 0
+    else:
+        text = text + i + " "
+text = text.replace("  ", "\n")
+
+# Select and blend two random background images
+x1 = randint(1, 9)
+bg_path1 = os.path.join(os.getcwd(), "BG", f"{x1}.png")
+x2 = randint(1, 9)
+bg_path2 = os.path.join(os.getcwd(), "BG", f"{x2}.png")
+im1 = Image.open(bg_path1).convert("RGBA")
+im2 = Image.open(bg_path2).convert("RGBA")
+alpha = randint(0, 10) / 10
+post = Image.blend(im1, im2, alpha)
+post = post.convert("RGBA")
+
+draw = ImageDraw.Draw(post)
+
+# List of fonts to choose from
+fontlist = [
+    "Montserrat-Black.ttf", "Montserrat-BlackItalic.ttf", "Montserrat-Bold.ttf", "Montserrat-BoldItalic.ttf",
+    "Montserrat-ExtraBold.ttf", "Montserrat-ExtraBoldItalic.ttf", "Montserrat-ExtraLight.ttf",
+    "Montserrat-ExtraLightItalic.ttf", "Montserrat-Italic.ttf", "Montserrat-Light.ttf", "Montserrat-LightItalic.ttf",
+    "Montserrat-Medium.ttf", "Montserrat-MediumItalic.ttf", "Montserrat-Regular.ttf", "Montserrat-SemiBold.ttf",
+    "Montserrat-SemiBoldItalic.ttf", "Montserrat-Thin.ttf", "Montserrat-ThinItalic.ttf"
+]
+
+# Draw the signing name at the bottom
+fontnumber = randint(0, 17)
+fontname = fontlist[fontnumber]
+font = ImageFont.truetype(os.path.join(os.getcwd(), "Font", fontname), 30)
+signing_name = "YourName"  # Replace with the actual signing name
+draw.text((760, 1000), signing_name, (50, 50, 50), font=font)
+
+# Draw the quote text in the center
+fontnumber2 = randint(0, 17)
+fontname2 = fontlist[fontnumber2]
+font = ImageFont.truetype(os.path.join(os.getcwd(), "Font", fontname2), 70)
+w, h = draw.textsize(text, font=font)
+draw.text(((1080 - w) / 2, (1080 - h) / 2), text, (30, 30, 30), font=font)
+
+# Save the final image
+output_path = os.path.join(os.getcwd(), "Post", "post.png")
+post.save(output_path)
+
+# Send email with the generated image as an attachment
+def send_email(subject, body, to_email, from_email, smtp_server, smtp_port, login, password, image_path):
+    msg = MIMEMultipart()
+    msg['Subject'] = subject
+    msg['From'] = from_email
+    msg['To'] = to_email
+
+    text = MIMEText(body)
+    msg.attach(text)
+
+    with open(image_path, 'rb') as f:
+        img = MIMEImage(f.read())
+        img.add_header('Content-Disposition', 'attachment', filename=os.path.basename(image_path))
+        msg.attach(img)
+
+    with smtplib.SMTP(smtp_server, smtp_port) as server:
+        server.starttls()
+        server.login(login, password)
+        server.sendmail(from_email, to_email, msg.as_string())
+
+# Email configuration
+subject = "Your Daily Quote"
+body = "Here is your daily quote image!"
+to_email = os.environ['TO_EMAIL']
+from_email = os.environ['FROM_EMAIL']
+smtp_server = os.environ['SMTP_SERVER']
+smtp_port = int(os.environ['SMTP_PORT'])
+login = os.environ['EMAIL_LOGIN']
+password = os.environ['EMAIL_PASSWORD']
+
+# Send the email
+send_email(subject, body, to_email, from_email, smtp_server, smtp_port, login, password, output_path)
