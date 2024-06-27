@@ -95,6 +95,28 @@ for line in wrapped_text:
 output_path = os.path.join(os.getcwd(), "Post", "post.png")
 post.save(output_path)
 
+
+access_token = "1598728457643422|E7IFD6L49wlRFGgajnqz3euZZTE"  # Replace with your actual access token
+page_id = "61560186676036"  # Replace with your actual page ID
+
+# Post the image to Facebook
+def post_to_facebook(image_path, message, access_token, page_id):
+    url = f"https://graph.facebook.com/{page_id}/photos"
+    payload = {
+        "message": message,
+        "access_token": access_token
+    }
+    files = {
+        "source": open(image_path, "rb")
+    }
+    response = requests.post(url, data=payload, files=files)
+    return response.json()
+
+message = f"{quote_text}\n\n- {quote_author}"
+
+response = post_to_facebook(output_path, message, access_token, page_id)
+
+
 def send_email(subject, body, to_email, from_email, smtp_server, smtp_port, login, password, image_path):
     msg = MIMEMultipart()
     msg['Subject'] = subject
