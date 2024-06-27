@@ -115,8 +115,8 @@ def send_email(subject, body, to_email, from_email, smtp_server, smtp_port, logi
         server.sendmail(from_email, to_email, msg.as_string())
 
 # Email configuration
-subject = "Your Daily Quote"
-body = "Here is your daily quote image!"
+subject = quote_text
+body = quote_text
 to_email = os.environ['TO_EMAIL']
 from_email = os.environ['FROM_EMAIL']
 smtp_server = os.environ['SMTP_SERVER']
