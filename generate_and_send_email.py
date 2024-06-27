@@ -1,6 +1,7 @@
 import os
 import re
 from random import randint
+import requests
 from requests import get
 from json import loads
 from PIL import Image, ImageDraw, ImageFont
