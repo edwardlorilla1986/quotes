@@ -116,7 +116,7 @@ def post_to_facebook(image_path, message, access_token, page_id):
 message = f"{quote_text}\n\n- {quote_author}"
 
 response = post_to_facebook(output_path, message, access_token, page_id)
-
+print(response)
 
 def send_email(subject, body, to_email, from_email, smtp_server, smtp_port, login, password, image_path):
     msg = MIMEMultipart()
