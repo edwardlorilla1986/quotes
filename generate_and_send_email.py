@@ -97,7 +97,7 @@ output_path = os.path.join(os.getcwd(), "Post", "post.png")
 post.save(output_path)
 
 
-access_token = "EAAWuCPnPZAZA4BO7peJZCeo6ZCH42W6gmqZBrXh5Q2RsJTMQ1puyta4DgZCwWcBZCyPMymhePEkqwOOiZCZAy7ZB3swkjexxDuZBNZCM3E6fnqiI9lzdlQ0nF4sCRLeQDp0u0jYqDjCzRC2RLaDoUHbZB98F44DdDdnYdPzkJ42I6koCZBUfxeinjUbHV1F81JSkLIqMbwZAs7UTXPgfBOcfT0ok1sVFrapYzHZBsp8HcAZDZD"  # Replace with your actual access token
+access_token = "EAAWuCPnPZAZA4BO0DjiQ8oZAKl1ZCbHBhi9FAEln4ZCNLSqZBO5VW7aD0ugzoYYz9f0NvxMfedHM4ZBnVtyEJ0hoCdhdYck4XkCjhwlokVqqDeXARC0FBlNSGCKYOQiAULFMZA6xC2DwH7MShNJKwp2zL7a6vZCUVX5BH3hbxnDFASwQPjMGTkIJ2kSk225CfkhAUCSgrQKpar7YfEZBGVtbZBTK7nuQFnaRpqHwwZDZD"  # Replace with your actual access token
 page_id = "332087273320790"  # Replace with your actual page ID
 
 # Post the image to Facebook
