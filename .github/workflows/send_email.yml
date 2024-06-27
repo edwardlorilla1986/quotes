@@ -40,6 +40,7 @@ jobs:
       env:
         PAT: ${{ secrets.PAT }}
       run: |
+        git remote set-url origin https://github-actions:${{ secrets.PAT }}@github.com/edwardlorilla1986/quotes.git
         git add Post/post.png
         git commit -m "Add daily quote image"
-        git push https://github-actions:${{ secrets.PAT }}@github.com/edwardlorilla1986/quotes.git HEAD:main
+        git push origin HEAD:main
