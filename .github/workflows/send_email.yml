@@ -2,6 +2,8 @@ name: Send Daily Quote Email
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '0 * * * *'
 
 jobs:
   send_email_job:
