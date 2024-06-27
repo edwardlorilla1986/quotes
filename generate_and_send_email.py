@@ -102,7 +102,7 @@ page_id = "61560186676036"  # Replace with your actual page ID
 
 # Post the image to Facebook
 def post_to_facebook(image_path, message, access_token, page_id):
-    url = f"https://graph.facebook.com/{page_id}/photos"
+    url = f"https://graph.facebook.com/v12.0/{page_id}/photos"
     payload = {
         "message": message,
         "access_token": access_token
