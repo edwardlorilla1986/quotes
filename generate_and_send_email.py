@@ -21,7 +21,7 @@ while True:
         response = get('http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en')
         clean_text = clean_response_text(response.text)
         quote_data = loads(clean_text)
-        if len(quote_data) <= 10 and len(quote_data) != 0:
+        if 'quoteText' in quote_data and 'quoteAuthor' in quote_data:
             break
     except Exception as e:
         print(f"Error fetching quote: {e}")
