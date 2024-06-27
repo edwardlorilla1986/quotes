@@ -14,6 +14,17 @@ def clean_response_text(text):
     text = re.sub(r'\\', '', text)
     return text
 
+# Function to wrap text
+def wrap_text(text, font, max_width):
+    lines = []
+    words = text.split()
+    while words:
+        line = ''
+        while words and font.getsize(line + words[0])[0] <= max_width:
+            line = line + (words.pop(0) + ' ')
+        lines.append(line)
+    return lines
+
 # Fetch a random quote from the Forismatic API
 quote_data = {}
 while True:
@@ -26,20 +37,9 @@ while True:
     except Exception as e:
         print(f"Error fetching quote: {e}")
 
-text1 = '{quoteText} - {quoteAuthor}'.format(**quote_data)
-text1 = text1.split(" ")
-c = 0
-text = ""
-
-# Format the quote text with a max of 3 words per line
-for i in text1:
-    c += 1
-    if c > 3:
-        text = text + "\n" + i + " "
-        c = 0
-    else:
-        text = text + i + " "
-text = text.replace("  ", "\n")
+quote_text = quote_data['quoteText']
+quote_author = quote_data['quoteAuthor']
+text = f"{quote_text} - {quote_author}"
 
 # Select and blend two random background images
 x1 = randint(1, 9)
@@ -74,9 +74,21 @@ draw.text((760, 1000), signing_name, (50, 50, 50), font=font)
 fontnumber2 = randint(0, 17)
 fontname2 = fontlist[fontnumber2]
 font = ImageFont.truetype(os.path.join(os.getcwd(), "Font", fontname2), 70)
-bbox = draw.textbbox((0, 0), text, font=font)
-w, h = bbox[2] - bbox[0], bbox[3] - bbox[1]
-draw.text(((1080 - w) / 2, (1080 - h) / 2), text, (30, 30, 30), font=font)
+max_width = 1000  # Set a max width for the text
+
+wrapped_text = wrap_text(text, font, max_width)
+line_height = font.getsize('hg')[1]
+total_height = line_height * len(wrapped_text)
+
+# Calculate position
+W, H = post.size
+y = (H - total_height) // 2
+
+for line in wrapped_text:
+    w, _ = draw.textsize(line, font=font)
+    x = (W - w) // 2
+    draw.text((x, y), line, (30, 30, 30), font=font)
+    y += line_height
 
 # Save the final image
 output_path = os.path.join(os.getcwd(), "Post", "post.png")
