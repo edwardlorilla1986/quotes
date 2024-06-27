@@ -15,12 +15,12 @@ def clean_response_text(text):
     return text
 
 # Function to wrap text
-def wrap_text(text, font, max_width):
+def wrap_text(draw, text, font, max_width):
     lines = []
     words = text.split()
     while words:
         line = ''
-        while words and font.getsize(line + words[0])[0] <= max_width:
+        while words and draw.textbbox((0, 0), line + words[0], font=font)[2] <= max_width:
             line = line + (words.pop(0) + ' ')
         lines.append(line)
     return lines
@@ -76,8 +76,8 @@ fontname2 = fontlist[fontnumber2]
 font = ImageFont.truetype(os.path.join(os.getcwd(), "Font", fontname2), 70)
 max_width = 1000  # Set a max width for the text
 
-wrapped_text = wrap_text(text, font, max_width)
-line_height = font.getsize('hg')[1]
+wrapped_text = wrap_text(draw, text, font, max_width)
+line_height = draw.textbbox((0, 0), 'hg', font=font)[3] - draw.textbbox((0, 0), 'hg', font=font)[1]
 total_height = line_height * len(wrapped_text)
 
 # Calculate position
@@ -85,7 +85,8 @@ W, H = post.size
 y = (H - total_height) // 2
 
 for line in wrapped_text:
-    w, _ = draw.textsize(line, font=font)
+    bbox = draw.textbbox((0, 0), line, font=font)
+    w = bbox[2] - bbox[0]
     x = (W - w) // 2
     draw.text((x, y), line, (30, 30, 30), font=font)
     y += line_height
@@ -93,6 +94,7 @@ for line in wrapped_text:
 # Save the final image
 output_path = os.path.join(os.getcwd(), "Post", "post.png")
 post.save(output_path)
+
 def send_email(subject, body, to_email, from_email, smtp_server, smtp_port, login, password, image_path):
     msg = MIMEMultipart()
     msg['Subject'] = subject
