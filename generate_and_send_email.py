@@ -1,4 +1,5 @@
 import os
+import re
 from random import randint
 from requests import get
 from json import loads
@@ -8,12 +9,23 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 
-# Fetch a random quote from the Forismatic API
-response = get('http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en')
-while len(loads(response.text)) > 10 or len(loads(response.text)) == 0:
-    response = get('http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en')
+# Function to clean response text
+def clean_response_text(text):
+    text = re.sub(r'\\', '', text)
+    return text
 
-quote_data = loads(response.text)
+# Fetch a random quote from the Forismatic API
+quote_data = {}
+while True:
+    try:
+        response = get('http://api.forismatic.com/api/1.0/?method=getQuote&format=json&lang=en')
+        clean_text = clean_response_text(response.text)
+        quote_data = loads(clean_text)
+        if len(quote_data) <= 10 and len(quote_data) != 0:
+            break
+    except Exception as e:
+        print(f"Error fetching quote: {e}")
+
 text1 = '{quoteText} - {quoteAuthor}'.format(**quote_data)
 text1 = text1.split(" ")
 c = 0
