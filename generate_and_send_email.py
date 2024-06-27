@@ -62,14 +62,13 @@ draw.text((760, 1000), signing_name, (50, 50, 50), font=font)
 fontnumber2 = randint(0, 17)
 fontname2 = fontlist[fontnumber2]
 font = ImageFont.truetype(os.path.join(os.getcwd(), "Font", fontname2), 70)
-w, h = draw.textsize(text, font=font)
+bbox = draw.textbbox((0, 0), text, font=font)
+w, h = bbox[2] - bbox[0], bbox[3] - bbox[1]
 draw.text(((1080 - w) / 2, (1080 - h) / 2), text, (30, 30, 30), font=font)
 
 # Save the final image
 output_path = os.path.join(os.getcwd(), "Post", "post.png")
 post.save(output_path)
-
-# Send email with the generated image as an attachment
 def send_email(subject, body, to_email, from_email, smtp_server, smtp_port, login, password, image_path):
     msg = MIMEMultipart()
     msg['Subject'] = subject
