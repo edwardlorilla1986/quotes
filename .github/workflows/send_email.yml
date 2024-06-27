@@ -1,8 +1,7 @@
 name: Send Daily Quote Email
 
 on:
-  schedule:
-    - cron: '0 9 * * *'  # Adjust the cron expression as needed
+  workflow_dispatch:
 
 jobs:
   send_email_job:
