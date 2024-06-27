@@ -42,4 +42,4 @@ jobs:
         git commit -m "Add daily quote image"
         git push
       env:
-        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.PAT }}  # Use the PAT instead of GITHUB_TOKEN
