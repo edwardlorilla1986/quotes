@@ -37,7 +37,9 @@ jobs:
         git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
     - name: Commit and push changes
+      env:
+        PAT: ${{ secrets.PAT }}
       run: |
         git add Post/post.png
         git commit -m "Add daily quote image"
-        git push https://edwardlorilla1986:${{ secrets.PAT }}@github.com/edwardlorilla1986/quotes.git HEAD:main
+        git push https://github-actions:${{ secrets.PAT }}@github.com/<username>/<repository>.git HEAD:main
