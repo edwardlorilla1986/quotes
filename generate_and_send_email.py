@@ -67,7 +67,7 @@ fontlist = [
 fontnumber = randint(0, 17)
 fontname = fontlist[fontnumber]
 font = ImageFont.truetype(os.path.join(os.getcwd(), "Font", fontname), 30)
-signing_name = "EdwardLanceArellanoLorilla"  # Replace with the actual signing name
+signing_name = "EdwardLorilla"  # Replace with the actual signing name
 draw.text((760, 1000), signing_name, (50, 50, 50), font=font)
 
 # Draw the quote text in the center
