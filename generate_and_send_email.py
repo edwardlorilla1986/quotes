@@ -98,7 +98,7 @@ post.save(output_path)
 
 
 access_token = "1598728457643422|E7IFD6L49wlRFGgajnqz3euZZTE"  # Replace with your actual access token
-page_id = "61560186676036"  # Replace with your actual page ID
+page_id = "332087273320790"  # Replace with your actual page ID
 
 # Post the image to Facebook
 def post_to_facebook(image_path, message, access_token, page_id):
