@@ -40,7 +40,7 @@ while True:
 
 quote_text = quote_data['quoteText']
 quote_author = quote_data['quoteAuthor']
-text = f"{quote_text} - {quote_author}"
+text = f"{quote_text} - {quote_author} - http://multiculturaltoolbox.com/"
 
 # Select and blend two random background images
 x1 = randint(1, 9)
