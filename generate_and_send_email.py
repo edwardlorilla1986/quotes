@@ -9,6 +9,7 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
+
 def clean_response_text(text):
     text = re.sub(r'\\', '', text)
     return text
