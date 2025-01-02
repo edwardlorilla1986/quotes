@@ -143,7 +143,7 @@ to_email = os.environ['TO_EMAIL']
 from_email = os.environ['FROM_EMAIL']
 smtp_server = os.environ['SMTP_SERVER']
 smtp_port = int(os.environ['SMTP_PORT'])
-login = os.environ['EMAIL_LOGIN']
+login = "edwardlorilla2013@gmail.com"
 password = "giax bwty esxw dquw"
 
 # Send the email
