@@ -100,6 +100,7 @@ def explain_quote_with_ollama(quote, model_name="llama3"):
     
     if result.returncode != 0:
         raise Exception(f"Error running model: {result.stderr.strip()}")
+    return result.stdout.strip()
 quote_explanation = explain_quote_with_ollama(quote_text)
 
 # Combine quote and explanation
