@@ -10,7 +10,7 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
-def ensure_model_available(model_name):
+def ensure_model_available(model_name="llama3"):
     """Ensure the model[
         "Researchers", "Data Scientists", "Common People", "Students", "Entrepreneurs",
         "Marketers", "Tech Enthusiasts", "Environmentalists", "Educators", "Healthcare Professionals",
