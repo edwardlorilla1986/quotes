@@ -9,6 +9,52 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
+def ensure_model_available(model_name):
+    """Ensure the model[
+        "Researchers", "Data Scientists", "Common People", "Students", "Entrepreneurs",
+        "Marketers", "Tech Enthusiasts", "Environmentalists", "Educators", "Healthcare Professionals",
+        "Investors", "Content Creators", "Policy Makers", "Journalists", "Travel Enthusiasts",
+        "Parents", "Artists", "Fitness Enthusiasts", "Engineers", "Historians",
+        "Teachers", "Developers", "Startup Founders", "Writers", "Bloggers",
+        "Gamers", "Environmental Activists", "Social Workers", "Consultants", "Small Business Owners",
+        "Public Speakers", "Podcasters", "Psychologists", "Sociologists", "Economists",
+        "Architects", "Designers", "Photographers", "Lawyers", "Accountants",
+        "Athletes", "Personal Trainers", "Chefs", "Food Critics", "Fashion Designers",
+        "Musicians", "Film Makers", "Storytellers", "Book Lovers", "Minimalists",
+        "Philosophers", "Technologists", "AI Enthusiasts", "Robotics Experts", "Urban Planners",
+        "Astronomers", "Mathematicians", "Physicists", "Chemists", "Biologists",
+        "Medical Researchers", "Veterinarians", "Farmers", "Futurists", "Cryptocurrency Enthusiasts",
+        "HR Professionals", "Recruiters", "Sales Experts", "E-commerce Entrepreneurs", "Digital Nomads",
+        "Remote Workers", "Mental Health Advocates", "Mindfulness Coaches", "Public Relations Experts", "Event Planners",
+        "Adventure Seekers", "Wildlife Conservationists", "Marine Biologists", "Astronauts", "Space Enthusiasts",
+        "DIY Hobbyists", "Car Enthusiasts", "Pet Owners", "Nature Photographers", "Gardeners",
+        "Home Decorators", "Interior Designers", "Outdoor Enthusiasts", "Sports Fans", "Social Media Influencers",
+        "YouTubers", "Film Critics", "Comedians", "Lifestyle Bloggers", "Relationship Coaches",
+        "Spiritual Guides", "Religious Leaders", "Ethicists", "Activists", "Human Rights Advocates",
+        "Policy Analysts", "Data Analysts", "Startup Mentors", "Cultural Historians", "Linguists"
+    ] is available locally or pull it if missing."""
+    try:
+        result = subprocess.run(
+            ["ollama", "list"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True
+        )
+        if model_name not in result.stdout:
+            print(f"Model {model_name} not found locally. Attempting to pull...")
+            pull_result = subprocess.run(
+                ["ollama", "pull", model_name],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True
+            )
+            if pull_result.returncode != 0:
+                raise Exception(f"Error pulling model: {pull_result.stderr.strip()}")
+            print(f"Model {model_name} pulled successfully.")
+        else:
+            print(f"Model {model_name} is already available locally.")
+    except Exception as e:
+        raise Exception(f"Error ensuring model availability: {e}")
 
 def clean_response_text(text):
     text = re.sub(r'\\', '', text)
@@ -41,20 +87,18 @@ quote_text = quote_data['quoteText']
 quote_author = quote_data['quoteAuthor']
 text = f"{quote_text} - {quote_author}"
 
-# Use Ollama to explain the quote
-def explain_quote_with_ollama(quote):
-    api_url = "http://127.0.0.1:11434/api/generate"
-    payload = {
-        "model": "llama3",  # Replace with the appropriate model name
-        "prompt": f"Explain the following quote in detail:\n\n\"{quote}\""
-    }
-    try:
-        response = requests.post(api_url, json=payload)
-        response.raise_for_status()
-        return response.json().get("output", "No explanation generated.")
-    except Exception as e:
-        return f"Error fetching explanation: {e}"
 
+def explain_quote_with_ollama(quote):
+    ensure_model_available(model_name)
+    result = subprocess.run(
+        ["ollama", "run", model_name, f"Explain the following quote in detail:\n\n\"{quote}\""],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True
+    )
+    
+    if result.returncode != 0:
+        raise Exception(f"Error running model: {result.stderr.strip()}")
 quote_explanation = explain_quote_with_ollama(quote_text)
 
 # Combine quote and explanation
