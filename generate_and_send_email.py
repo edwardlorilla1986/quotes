@@ -93,8 +93,19 @@ text = f"{quote_text} - {quote_author}"
 
 def explain_quote_with_ollama(quote, model_name="llama3"):
     ensure_model_available()
+    prompt = (
+        f"You are a professional writer creating a blog post about inspirational quotes. "
+        f"Write a detailed blog post analyzing the following quote:\n\n"
+        f"\"{quote}\"\n\n"
+        f"Your blog post should include the following sections:\n"
+        f"1. **Introduction**: Provide context about the quote and its relevance in today's world.\n"
+        f"2. **Detailed Analysis**: Break down the meaning of the quote and explain its key components.\n"
+        f"3. **Real-Life Application**: Discuss how this quote can be applied in everyday life or specific scenarios.\n"
+        f"4. **Conclusion**: Summarize the importance of the quote and leave the reader with a thought-provoking takeaway.\n\n"
+        f"Write in an engaging and motivational tone suitable for a broad audience."
+    )
     result = subprocess.run(
-        ["ollama", "run", model_name, f"Explain the following quote in detail:\n\n\"{quote}\""],
+        ["ollama", "run", model_name, prompt],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         text=True
