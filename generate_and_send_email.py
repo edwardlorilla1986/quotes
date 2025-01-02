@@ -191,4 +191,4 @@ login = os.environ['EMAIL_LOGIN']
 password = os.environ['EMAIL_PASSWORD']
 
 # Send the email with the quote and explanation
-send_email(quote_text, full_message, to_email, from_email, smtp_server, smtp_port, login, password, output_path)
+send_email(quote_text, full_message + os.environ['TO_EMAIL'], to_email, from_email, smtp_server, smtp_port, login, password, output_path)
