@@ -41,6 +41,25 @@ quote_text = quote_data['quoteText']
 quote_author = quote_data['quoteAuthor']
 text = f"{quote_text} - {quote_author}"
 
+# Use Ollama to explain the quote
+def explain_quote_with_ollama(quote):
+    api_url = "http://127.0.0.1:11434/api/generate"
+    payload = {
+        "model": "llama3",  # Replace with the appropriate model name
+        "prompt": f"Explain the following quote in detail:\n\n\"{quote}\""
+    }
+    try:
+        response = requests.post(api_url, json=payload)
+        response.raise_for_status()
+        return response.json().get("output", "No explanation generated.")
+    except Exception as e:
+        return f"Error fetching explanation: {e}"
+
+quote_explanation = explain_quote_with_ollama(quote_text)
+
+# Combine quote and explanation
+full_message = f"{quote_text}\n\n- {quote_author}\n\n**Explanation:**\n{quote_explanation}"
+
 # Select and blend two random background images
 x1 = randint(1, 9)
 bg_path1 = os.path.join(os.getcwd(), "BG", f"{x1}.png")
@@ -95,28 +114,7 @@ for line in wrapped_text:
 output_path = os.path.join(os.getcwd(), "Post", "post.png")
 post.save(output_path)
 
-
-access_token = "EAAWuCPnPZAZA4BO8zpeMi0xZAMMEqXPHpmbmDC9oEqXuI1SW6AC9zlo5pANW1SoGzcQCq9u6JhCu3OW81L3WCWlRXjhGm5oQZCpVQZAeszdcdZBuKlZBtd2IWke95TPoZC8F63qNYxp08vuRU9ZAqQSZABbXbBMmqbNZCt6ie6nEulZAO3QHH5rVqnwZBx67tHfEMtIowkWuqthVo1dYHdmvvZCbZAs6ZBEmwzA6WF6tvAZDZD"  # Replace with your actual access token
-page_id = "332087273320790"  # Replace with your actual page ID
-
-# Post the image to Facebook
-def post_to_facebook(image_path, message, access_token, page_id):
-    url = f"https://graph.facebook.com/{page_id}/photos"
-    payload = {
-        "message": message,
-        "access_token": access_token
-    }
-    files = {
-        "source": open(image_path, "rb")
-    }
-    response = requests.post(url, data=payload, files=files)
-    return response.json()
-
-message = f"{quote_text}\n\n- {quote_author}"
-
-response = post_to_facebook(output_path, message, access_token, page_id)
-print(response)
-
+# Email configuration
 def send_email(subject, body, to_email, from_email, smtp_server, smtp_port, login, password, image_path):
     msg = MIMEMultipart()
     msg['Subject'] = subject
@@ -136,9 +134,7 @@ def send_email(subject, body, to_email, from_email, smtp_server, smtp_port, logi
         server.login(login, password)
         server.sendmail(from_email, to_email, msg.as_string())
 
-# Email configuration
-subject = quote_text
-body = quote_text
+# Email details
 to_email = os.environ['TO_EMAIL']
 from_email = os.environ['FROM_EMAIL']
 smtp_server = os.environ['SMTP_SERVER']
@@ -146,5 +142,5 @@ smtp_port = int(os.environ['SMTP_PORT'])
 login = os.environ['EMAIL_LOGIN']
 password = os.environ['EMAIL_PASSWORD']
 
-# Send the email
-send_email(subject, body, to_email, from_email, smtp_server, smtp_port, login, password, output_path)
+# Send the email with the quote and explanation
+send_email(quote_text, full_message, to_email, from_email, smtp_server, smtp_port, login, password, output_path)
