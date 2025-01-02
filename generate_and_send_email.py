@@ -89,7 +89,7 @@ quote_author = quote_data['quoteAuthor']
 text = f"{quote_text} - {quote_author}"
 
 
-def explain_quote_with_ollama(quote):
+def explain_quote_with_ollama(quote, model_name="llama3"):
     ensure_model_available()
     result = subprocess.run(
         ["ollama", "run", model_name, f"Explain the following quote in detail:\n\n\"{quote}\""],
